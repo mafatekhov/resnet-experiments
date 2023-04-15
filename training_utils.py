@@ -1,3 +1,5 @@
+import time
+
 import torch
 
 from tqdm import tqdm
@@ -52,3 +54,43 @@ def validate(model, testloader, criterion, device):
     epoch_loss = valid_running_loss / counter
     epoch_acc = 100. * (valid_running_correct / len(testloader.dataset))
     return epoch_loss, epoch_acc
+
+
+def calibrate_model(model, loader, device=torch.device("cpu:0")):
+    model.to(device)
+    model.eval()
+
+    for inputs, labels in loader:
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+        _ = model(inputs)
+
+
+def measure_inference_latency(model,
+                              device,
+                              input_size=(1, 3, 32, 32),
+                              num_samples=100,
+                              num_warmups=10):
+    model.to(device)
+    model.eval()
+    print('1')
+    x = torch.rand(size=input_size).to(device)
+
+    with torch.no_grad():
+        for _ in range(num_warmups):
+            _ = model(x)
+    torch.cuda.synchronize()
+
+    print('2')
+
+    with torch.no_grad():
+        start_time = time.time()
+        for _ in range(num_samples):
+            _ = model(x)
+            torch.cuda.synchronize()
+        end_time = time.time()
+    print('3')
+    elapsed_time = end_time - start_time
+    elapsed_time_ave = elapsed_time / num_samples
+
+    return elapsed_time_ave
