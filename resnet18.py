@@ -144,7 +144,7 @@ class Bottleneck(nn.Module):
         return out
 
 
-class ResNetCifar10(nn.Module):
+class ResNet(nn.Module):
     def __init__(
             self,
             block: Type[Union[BasicBlock, Bottleneck]],
@@ -155,7 +155,7 @@ class ResNetCifar10(nn.Module):
             width_per_group: int = 64,
             replace_stride_with_dilation: Optional[List[bool]] = None,
             norm_layer: Optional[Callable[..., nn.Module]] = None) -> None:
-        super(ResNetCifar10, self).__init__()
+        super(ResNet, self).__init__()
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
         self._norm_layer = norm_layer
@@ -277,10 +277,10 @@ class ResNetCifar10(nn.Module):
         return self._forward_impl(x)
 
 
-def _resnet(block: Type[Union[BasicBlock, Bottleneck]], layers: List[int], **kwargs: Any) -> ResNetCifar10:
-    model = ResNetCifar10(block, layers, **kwargs)
+def _resnet(block: Type[Union[BasicBlock, Bottleneck]], layers: List[int], **kwargs: Any) -> ResNet:
+    model = ResNet(block, layers, **kwargs)
     return model
 
 
-def resnet18(**kwargs: Any) -> ResNetCifar10:
+def resnet18(**kwargs: Any) -> ResNet:
     return _resnet(BasicBlock, [2, 2, 2, 2], **kwargs)

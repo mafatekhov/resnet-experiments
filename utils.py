@@ -8,7 +8,7 @@ from torchvision import datasets, transforms
 from torchvision.transforms import ToTensor
 
 plt.style.use('ggplot')
-mpl.use('TkAgg')
+# mpl.use('TkAgg')
 
 
 def get_data(batch=64):

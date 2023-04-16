@@ -44,8 +44,11 @@ def validate(model, testloader, criterion, device):
             labels = labels.to(device)
             outputs = model(image)
             # Calculate the loss.
-            loss = criterion(outputs, labels)
-            valid_running_loss += loss.item()
+            if criterion is not None:
+                loss = criterion(outputs, labels).item()
+            else:
+                loss = 0
+            valid_running_loss += loss
             # Calculate the accuracy.
             _, preds = torch.max(outputs.data, 1)
             valid_running_correct += (preds == labels).sum().item()
@@ -73,7 +76,6 @@ def measure_inference_latency(model,
                               num_warmups=10):
     model.to(device)
     model.eval()
-    print('1')
     x = torch.rand(size=input_size).to(device)
 
     with torch.no_grad():
@@ -81,15 +83,12 @@ def measure_inference_latency(model,
             _ = model(x)
     torch.cuda.synchronize()
 
-    print('2')
-
     with torch.no_grad():
         start_time = time.time()
         for _ in range(num_samples):
             _ = model(x)
             torch.cuda.synchronize()
         end_time = time.time()
-    print('3')
     elapsed_time = end_time - start_time
     elapsed_time_ave = elapsed_time / num_samples
 
