@@ -128,7 +128,6 @@ class Bottleneck(nn.Module):
 
         out = self.conv2(out)
         out = self.bn2(out)
-        out = self.relu(out)
 
         out = self.conv3(out)
         out = self.bn3(out)
@@ -256,7 +255,6 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def _forward_impl(self, x: Tensor) -> Tensor:
-        # See note [TorchScript super()]
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -284,3 +282,11 @@ def _resnet(block: Type[Union[BasicBlock, Bottleneck]], layers: List[int], **kwa
 
 def resnet18(**kwargs: Any) -> ResNet:
     return _resnet(BasicBlock, [2, 2, 2, 2], **kwargs)
+
+
+def resnet34(**kwargs: Any) -> ResNet:
+    return _resnet(BasicBlock, [3, 4, 6, 3], **kwargs)
+
+
+def resnet50(**kwargs: Any) -> ResNet:
+    return _resnet(Bottleneck, [3, 4, 6, 3], **kwargs)

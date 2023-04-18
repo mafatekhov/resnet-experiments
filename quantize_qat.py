@@ -6,7 +6,7 @@ from resnet18 import resnet18
 
 import torch
 
-from quantized_resnet import QuantizedResNet18
+from quantized_resnet import QuantizedResNet
 from utils import load_model, get_data, save_model, save_torchscript_model
 
 if __name__ == '__main__':
@@ -47,7 +47,7 @@ if __name__ == '__main__':
                         torch.quantization.fuse_modules(sub_block, [["0", "1"]], inplace=True)
 
 
-    quantized_model = QuantizedResNet18(model_fp32=fused_model)
+    quantized_model = QuantizedResNet(model_fp32=fused_model)
 
     # Select quantization schemes from
     # https://pytorch.org/docs/stable/quantization-support.html

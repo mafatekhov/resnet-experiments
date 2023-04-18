@@ -81,15 +81,22 @@ def measure_inference_latency(model,
     with torch.no_grad():
         for _ in range(num_warmups):
             _ = model(x)
-    torch.cuda.synchronize()
+    # torch.cuda.synchronize()
 
     with torch.no_grad():
         start_time = time.time()
         for _ in range(num_samples):
             _ = model(x)
-            torch.cuda.synchronize()
+            # torch.cuda.synchronize()
         end_time = time.time()
     elapsed_time = end_time - start_time
     elapsed_time_ave = elapsed_time / num_samples
 
     return elapsed_time_ave
+
+
+def dump_to_onnx(model, output_dir):
+    dummy_input = torch.autograd.Variable(torch.randn(1, 3, 32, 32))
+    input_names = ["data"]
+    output_names = ["output"]
+    torch.onnx.export(model, dummy_input, output_dir, input_names=input_names, output_names=output_names)
