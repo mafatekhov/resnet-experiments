@@ -3,10 +3,6 @@ performance/accuracy metrics for these models.
 
 All steps can be repeated on a Google Collab with the python notebook that can be found in this repo.
 
-Two quantization approaches were compared through these experiments:
-- [Quantization-aware training](https://pytorch.org/TensorRT/tutorials/ptq.html)
-- [Post-training quantization](https://pytorch.org/docs/stable/quantization.html)
-
 ## Flow
 
 1. Training
@@ -28,13 +24,13 @@ Two quantization approaches were compared through these experiments:
        Convert a calibrated/trained model to a quantized model
 
 3. Gather metrics
-    Accuracy and latency data was collected fir the resulting 6 models - pt and jit models for FP and quantized versions of Resnet18/34/50.
+    Accuracy and latency data was collected for the resulting 18 models - pt and jit models for FP and quantized versions of Resnet18/34/50.
     All models were inferred on a Intel(R) Core(TM) i9-9880H CPU @ 2.30GHz.
 
 4. Compare with OpenVINO PTQ
     Additional steps were taken to compare Pytorch PTQ/QAT with OpenVINO PTQ. To achieve this, all models were dumped to ONNX.
     Later, models were converted to IR, baseline performance was collected via [DL Workbench](https://docs.openvino.ai/2021.2/workbench_docs_Workbench_DG_Install_from_Docker_Hub_mac.html),
-    and models were quantized with the Default method provided my OpenVINO calibration tool.
+    and models were quantized with the Default method provided by OpenVINO calibration tool.
 
 ## Results:
 
@@ -63,7 +59,7 @@ The result of experiments in Pytorch can found ona table below:
 | Resnet50 QAT JIT | 2.69        | 66.790      | 24       |
 
 
-Although the PTQ for resnet50 resulted to a poor accuracy, that need further investigation, there is a common pattern:
+Although the PTQ for resnet50 resulted to a poor accuracy, that needs a further investigation, there is a common pattern:
 - The fastest inference is provided by JIT version of a PTQ model (~5.5 faster against baseline)
   with a QAT version slightly slower (~4.5 faster against baseline).
 - PTQ results in slight accuracy drop, however, surprisingly QAT provides a higher accuracy on a given dataset.
